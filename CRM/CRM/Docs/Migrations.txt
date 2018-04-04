@@ -1,0 +1,5 @@
+﻿Enable-Migrations -ContextTypeName CrmContext -MigrationsDirectory Migrations\CRM
+
+add-migration -ConfigurationTypeName CRM.Migrations.CRM.Configuration "InitialCreate"
+
+update-database -ConfigurationTypeName CRM.Migrations.CRM.Configuration 
