@@ -7,17 +7,24 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CRM.Models;
+using CRM.Repository;
 
 namespace CRM.Controllers
 {
     public class SectionsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private SectionRepository _sectionRepository;
+
+        public SectionsController()
+        {
+            _sectionRepository = new SectionRepository();
+        }
+
 
         // GET: Sections
         public ActionResult Index()
         {
-            return View(db.Sections.ToList());
+            return View(_sectionRepository.GetWhere(x => x.Id > 0));
         }
 
         // GET: Sections/Details/5
@@ -27,7 +34,8 @@ namespace CRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Section section = db.Sections.Find(id);
+            Section section = _sectionRepository.GetWhere(x => x.Id == id.Value).FirstOrDefault();
+
             if (section == null)
             {
                 return HttpNotFound();
@@ -50,8 +58,8 @@ namespace CRM.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Sections.Add(section);
-                db.SaveChanges();
+                _sectionRepository.Create(section);
+               
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +73,7 @@ namespace CRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Section section = db.Sections.Find(id);
+            Section section = _sectionRepository.GetWhere(x => x.Id == id).FirstOrDefault();
             if (section == null)
             {
                 return HttpNotFound();
@@ -78,12 +86,12 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,SectionName,Job")] Section section)
+        public ActionResult Edit( Section section)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(section).State = EntityState.Modified;
-                db.SaveChanges();
+                _sectionRepository.Update(section);
+              
                 return RedirectToAction("Index");
             }
             return View(section);
@@ -96,7 +104,7 @@ namespace CRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Section section = db.Sections.Find(id);
+            Section section = _sectionRepository.GetWhere(x => x.Id == id).FirstOrDefault();
             if (section == null)
             {
                 return HttpNotFound();
@@ -109,19 +117,12 @@ namespace CRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Section section = db.Sections.Find(id);
-            db.Sections.Remove(section);
-            db.SaveChanges();
+            Section section = _sectionRepository.GetWhere(x => x.Id == id).FirstOrDefault();
+            _sectionRepository.Delete(section);
+           
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+      
     }
 }
