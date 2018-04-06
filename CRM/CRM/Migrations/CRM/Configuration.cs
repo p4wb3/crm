@@ -1,13 +1,12 @@
-using CRM.DAL;
-
 namespace CRM.Migrations.CRM
 {
+
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<DAL.CrmContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Models.ApplicationDbContext>
     {
         public Configuration()
         {
@@ -15,7 +14,7 @@ namespace CRM.Migrations.CRM
             MigrationsDirectory = @"Migrations\CRM";
         }
 
-        protected override void Seed(DAL.CrmContext context)
+        protected override void Seed(Models.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 
@@ -29,14 +28,6 @@ namespace CRM.Migrations.CRM
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            context.Sections.AddOrUpdate(
-                s => s.SectionName, DummyData.getSections().ToArray());
-            context.SaveChanges();
-
-            context.Employees.AddOrUpdate(
-                e => new { e.FirstName, e.LastName }, DummyData.getEmployee(context).ToArray());
-            context.SaveChanges();
         }
-
     }
 }

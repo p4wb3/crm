@@ -1,5 +1,18 @@
-﻿Enable-Migrations -ContextTypeName CrmContext -MigrationsDirectory Migrations\CRM
+﻿Enable-Migrations -ContextTypeName ApplicationDbContext -MigrationsDirectory Migrations\CRM
 
-add-migration -ConfigurationTypeName CRM.Migrations.CRM.Configuration "InitialCreate"
+add-migration -ConfigurationTypeName CRM.Migrations.CRM.Configuration "Inicial Create"
 
 update-database -ConfigurationTypeName CRM.Migrations.CRM.Configuration 
+
+===========================================================Restart servera=================================================================
+
+sqllocaldb.exe stop MSSQLLocalDB
+
+sqllocaldb.exe delete MSSQLLocalDB
+
+sqllocaldb.exe start MSSQLLocalDB
+
+sqllocaldb stop MSSQLLocalDB -k
+sqllocaldb delete MSSQLLocalDB
+sqllocaldb create MSSQLLocalDB
+sqllocaldb start MSSQLLocalDB

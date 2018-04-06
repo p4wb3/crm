@@ -6,14 +6,13 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using CRM.DAL;
 using CRM.Models;
 
 namespace CRM.Controllers
 {
     public class SectionsController : Controller
     {
-        private CrmContext db = new CrmContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Sections
         public ActionResult Index()
@@ -22,7 +21,7 @@ namespace CRM.Controllers
         }
 
         // GET: Sections/Details/5
-        public ActionResult Details(string id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -47,7 +46,7 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SectionName,Job")] Section section)
+        public ActionResult Create([Bind(Include = "Id,SectionName,Job")] Section section)
         {
             if (ModelState.IsValid)
             {
@@ -60,7 +59,7 @@ namespace CRM.Controllers
         }
 
         // GET: Sections/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -79,7 +78,7 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SectionName,Job")] Section section)
+        public ActionResult Edit([Bind(Include = "Id,SectionName,Job")] Section section)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +90,7 @@ namespace CRM.Controllers
         }
 
         // GET: Sections/Delete/5
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -108,7 +107,7 @@ namespace CRM.Controllers
         // POST: Sections/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public ActionResult DeleteConfirmed(int id)
         {
             Section section = db.Sections.Find(id);
             db.Sections.Remove(section);

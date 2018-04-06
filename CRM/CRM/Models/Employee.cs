@@ -13,7 +13,7 @@ namespace CRM.Models
         public int Age { get; set; }
         public string Adress { get; set; }
 
-        public string SectionName { get; set; }
+        public int Id { get; set; }
         public Section Section { get; set; }
     }
 }

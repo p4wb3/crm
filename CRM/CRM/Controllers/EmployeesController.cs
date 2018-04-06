@@ -6,20 +6,18 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using CRM.DAL;
 using CRM.Models;
 
 namespace CRM.Controllers
 {
     public class EmployeesController : Controller
     {
-        private CrmContext db = new CrmContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Employees
         public ActionResult Index()
         {
-            var employees = db.Employees.Include(e => e.Section);
-            return View(employees.ToList());
+            return View(db.Employees.ToList());
         }
 
         // GET: Employees/Details/5
@@ -40,7 +38,6 @@ namespace CRM.Controllers
         // GET: Employees/Create
         public ActionResult Create()
         {
-            ViewBag.SectionName = new SelectList(db.Sections, "SectionName", "Job");
             return View();
         }
 
@@ -49,7 +46,7 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "EmployeeId,FirstName,LastName,Age,Adress,SectionName")] Employee employee)
+        public ActionResult Create([Bind(Include = "Id,EmployeeId,FirstName,LastName,Age,Adress")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -58,7 +55,6 @@ namespace CRM.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SectionName = new SelectList(db.Sections, "SectionName", "Job", employee.SectionName);
             return View(employee);
         }
 
@@ -74,7 +70,6 @@ namespace CRM.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.SectionName = new SelectList(db.Sections, "SectionName", "Job", employee.SectionName);
             return View(employee);
         }
 
@@ -83,7 +78,7 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EmployeeId,FirstName,LastName,Age,Adress,SectionName")] Employee employee)
+        public ActionResult Edit([Bind(Include = "Id,EmployeeId,FirstName,LastName,Age,Adress")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +86,6 @@ namespace CRM.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.SectionName = new SelectList(db.Sections, "SectionName", "Job", employee.SectionName);
             return View(employee);
         }
 

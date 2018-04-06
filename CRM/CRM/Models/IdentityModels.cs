@@ -23,11 +23,15 @@ namespace CRM.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+
         }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<Section> Sections { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }
