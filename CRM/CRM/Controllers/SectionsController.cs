@@ -54,7 +54,7 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,SectionName,Job")] Section section)
+        public ActionResult Create( Section section)
         {
             if (ModelState.IsValid)
             {

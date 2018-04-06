@@ -7,17 +7,25 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CRM.Models;
+using CRM.Repository;
 
 namespace CRM.Controllers
 {
     public class EmployeesController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private EmployeeRepository _employeeRepository;
+        private SectionRepository _sectionRepository;
 
+        public EmployeesController()
+        {
+            _employeeRepository = new EmployeeRepository();
+            _sectionRepository= new SectionRepository();
+        }
         // GET: Employees
         public ActionResult Index()
         {
-            return View(db.Employees.ToList());
+           
+            return View(_employeeRepository.GetWhere(x=>x.Id>0));
         }
 
         // GET: Employees/Details/5
@@ -27,7 +35,7 @@ namespace CRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _employeeRepository.GetWhere(x => x.Id == id.Value).FirstOrDefault();
             if (employee == null)
             {
                 return HttpNotFound();
@@ -46,12 +54,12 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,EmployeeId,FirstName,LastName,Age,Adress")] Employee employee)
+        public ActionResult Create(Employee employee)
         {
             if (ModelState.IsValid)
             {
-                db.Employees.Add(employee);
-                db.SaveChanges();
+                _employeeRepository.Create(employee);
+                
                 return RedirectToAction("Index");
             }
 
@@ -65,12 +73,15 @@ namespace CRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _employeeRepository.GetWhere(x => x.Id == id).FirstOrDefault();
+
             if (employee == null)
             {
                 return HttpNotFound();
             }
-            return View(employee);
+
+            ViewBag.SectionId = new SelectList(_sectionRepository.GetWhere(x => x.Id > 0), "Id", "SectionName");
+             return View(employee);
         }
 
         // POST: Employees/Edit/5
@@ -78,15 +89,14 @@ namespace CRM.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,EmployeeId,FirstName,LastName,Age,Adress")] Employee employee)
+        public ActionResult Edit(Employee employee)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(employee).State = EntityState.Modified;
-                db.SaveChanges();
+                _employeeRepository.Update(employee);
                 return RedirectToAction("Index");
             }
-            return View(employee);
+           return View(employee);
         }
 
         // GET: Employees/Delete/5
@@ -96,7 +106,8 @@ namespace CRM.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _employeeRepository.GetWhere(x => x.Id == id).FirstOrDefault();
+
             if (employee == null)
             {
                 return HttpNotFound();
@@ -109,19 +120,11 @@ namespace CRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Employee employee = db.Employees.Find(id);
-            db.Employees.Remove(employee);
-            db.SaveChanges();
+            Employee employee = _employeeRepository.GetWhere(x => x.Id == id).FirstOrDefault();
+            _employeeRepository.Delete(employee);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+       
     }
 }
