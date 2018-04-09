@@ -46,8 +46,11 @@ namespace CRM.Controllers
         // GET: Employees/Create
         public ActionResult Create()
         {
+            ViewBag.SectionId = new SelectList(_sectionRepository.GetWhere(x => x.Id > 0), "Id", "SectionName");
             return View();
+          
         }
+        
 
         // POST: Employees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -62,7 +65,7 @@ namespace CRM.Controllers
                 
                 return RedirectToAction("Index");
             }
-
+           
             return View(employee);
         }
 
